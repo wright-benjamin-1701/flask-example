@@ -98,7 +98,7 @@ def FUN_delete_note(note_id):
 
 
 # Reference: http://flask.pocoo.org/docs/0.12/patterns/fileuploads/
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
