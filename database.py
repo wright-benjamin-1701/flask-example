@@ -21,7 +21,7 @@ def verify(id, pw):
     _conn = sqlite3.connect(user_db_file_location)
     _c = _conn.cursor()
 
-    _c.execute("SELECT pw FROM users WHERE id = '" + id + "';")
+    _c.execute("SELECT pw FROM users WHERE id = ?" + ";", (id, ))
     result = _c.fetchone()[0] == hashlib.sha256(pw.encode()).hexdigest()
     
     _conn.close()
@@ -31,14 +31,14 @@ def verify(id, pw):
 def delete_user_from_db(id):
     _conn = sqlite3.connect(user_db_file_location)
     _c = _conn.cursor()
-    _c.execute("DELETE FROM users WHERE id = '" + id + "';")
+    _c.execute("DELETE FROM users WHERE id = ?" + ";", (id, ))
     _conn.commit()
     _conn.close()
 
     # when we delete a user FROM database USERS, we also need to delete all his or her notes data FROM database NOTES
     _conn = sqlite3.connect(note_db_file_location)
     _c = _conn.cursor()
-    _c.execute("DELETE FROM notes WHERE user = '" + id + "';")
+    _c.execute("DELETE FROM notes WHERE user = ?" + ";", (id, ))
     _conn.commit()
     _conn.close()
 
@@ -47,7 +47,7 @@ def delete_user_from_db(id):
     # [2] delete all his or her images records FROM database IMAGES
     _conn = sqlite3.connect(image_db_file_location)
     _c = _conn.cursor()
-    _c.execute("DELETE FROM images WHERE owner = '" + id + "';")
+    _c.execute("DELETE FROM images WHERE owner = ?" + ";", (id, ))
     _conn.commit()
     _conn.close()
 
@@ -64,8 +64,8 @@ def read_note_from_db(id):
     _conn = sqlite3.connect(note_db_file_location)
     _c = _conn.cursor()
 
-    command = "SELECT note_id, timestamp, note FROM notes WHERE user = '" + id.upper() + "';" 
-    _c.execute(command)
+    command = "SELECT note_id, timestamp, note FROM notes WHERE user = ?" + ";" 
+    _c.execute(command, (id.upper(), ))
     result = _c.fetchall()
 
     _conn.commit()
@@ -78,8 +78,8 @@ def match_user_id_with_note_id(note_id):
     _conn = sqlite3.connect(note_db_file_location)
     _c = _conn.cursor()
 
-    command = "SELECT user FROM notes WHERE note_id = '" + note_id + "';" 
-    _c.execute(command)
+    command = "SELECT user FROM notes WHERE note_id = ?" + ";" 
+    _c.execute(command, (note_id, ))
     result = _c.fetchone()[0]
 
     _conn.commit()
@@ -101,8 +101,8 @@ def delete_note_from_db(note_id):
     _conn = sqlite3.connect(note_db_file_location)
     _c = _conn.cursor()
 
-    command = "DELETE FROM notes WHERE note_id = '" + note_id + "';" 
-    _c.execute(command)
+    command = "DELETE FROM notes WHERE note_id = ?" + ";" 
+    _c.execute(command, (note_id, ))
 
     _conn.commit()
     _conn.close()
@@ -134,8 +134,8 @@ def match_user_id_with_image_uid(image_uid):
     _conn = sqlite3.connect(image_db_file_location)
     _c = _conn.cursor()
 
-    command = "SELECT owner FROM images WHERE uid = '" + image_uid + "';" 
-    _c.execute(command)
+    command = "SELECT owner FROM images WHERE uid = ?" + ";" 
+    _c.execute(command, (image_uid, ))
     result = _c.fetchone()[0]
 
     _conn.commit()
@@ -147,8 +147,8 @@ def delete_image_from_db(image_uid):
     _conn = sqlite3.connect(image_db_file_location)
     _c = _conn.cursor()
 
-    command = "DELETE FROM images WHERE uid = '" + image_uid + "';" 
-    _c.execute(command)
+    command = "DELETE FROM images WHERE uid = ?" + ";" 
+    _c.execute(command, (image_uid, ))
 
     _conn.commit()
     _conn.close()
